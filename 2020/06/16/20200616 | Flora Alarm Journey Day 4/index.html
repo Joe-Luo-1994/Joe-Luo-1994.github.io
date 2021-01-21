@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"j892020.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="今日透過 QuizApp 學習許多 UI component 及其參數設置，也學習一些在 activity.kt 中設置 listener、修改 UI 參數的方式。 關於 UI Component 部分因用過即知道，暫不花篇幅額外介紹，僅用關鍵字做個備忘。 而除了 Kotlin 部分，今天也試著解決問題：「要做出什麼樣的產品」，會影響到報告、學習、甚至畢業與就業的問題。也會紀錄過程中的收穫。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day 4 | Flora Alarm Journey">
+<meta property="og:url" content="https://j892020.github.io/2020/06/16/20200616%20|%20Flora%20Alarm%20Journey%20Day%204/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="今日透過 QuizApp 學習許多 UI component 及其參數設置，也學習一些在 activity.kt 中設置 listener、修改 UI 參數的方式。 關於 UI Component 部分因用過即知道，暫不花篇幅額外介紹，僅用關鍵字做個備忘。 而除了 Kotlin 部分，今天也試著解決問題：「要做出什麼樣的產品」，會影響到報告、學習、甚至畢業與就業的問題。也會紀錄過程中的收穫。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://j892020.github.io/2020/06/16/20200616%20%7C%20Flora%20Alarm%20Journey%20Day%204/title.jpeg">
+<meta property="article:published_time" content="2020-06-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-01-21T05:26:52.869Z">
+<meta property="article:author" content="Joe Luo">
+<meta property="article:tag" content="Kotlin, 產品思維">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://j892020.github.io/2020/06/16/20200616%20%7C%20Flora%20Alarm%20Journey%20Day%204/title.jpeg">
+
+<link rel="canonical" href="https://j892020.github.io/2020/06/16/20200616%20|%20Flora%20Alarm%20Journey%20Day%204/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Day 4 | Flora Alarm Journey | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://j892020.github.io/2020/06/16/20200616%20|%20Flora%20Alarm%20Journey%20Day%204/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Joe Luo">
+      <meta itemprop="description" content="外語工程師的成長路途">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Day 4 | Flora Alarm Journey
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-16T00:00:00+08:00">2020-06-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-21 13:26:52" itemprop="dateModified" datetime="2021-01-21T13:26:52+08:00">2021-01-21</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="title.jpeg" alt="title">
+
+<p>今日透過 QuizApp 學習許多 UI component 及其參數設置，也學習一些在 activity.kt 中設置 listener、修改 UI 參數的方式。</p>
+<p>關於 UI Component 部分因用過即知道，暫不花篇幅額外介紹，僅用關鍵字做個備忘。</p>
+<p>而除了 Kotlin 部分，今天也試著解決問題：「要做出什麼樣的產品」，會影響到報告、學習、甚至畢業與就業的問題。也會紀錄過程中的收穫。</p>
+<p>關鍵字：<strong><em>Intent</em></strong>, <strong>library implementation</strong>, <strong><em>material design</em></strong>, <strong><em>Cardview</em></strong>, <strong><em>marginStart</em></strong>, <strong>全螢幕效果</strong>, <strong><em>object</em></strong>, <strong><em>ScrollView</em></strong>, <strong><em>ImageView</em></strong>, <strong><em>ProgressBar</em></strong>, <strong><em>shape</em></strong>, <strong><em>tools:text</em></strong>, <strong><em>drawable resources</em></strong>, <strong><em>context</em></strong></p>
+<a id="more"></a>
+
+<h1 id="Kotlin-部分"><a href="#Kotlin-部分" class="headerlink" title="Kotlin 部分"></a>Kotlin 部分</h1><p>以下紀錄查找資料過程中覺得重要的收穫</p>
+<h2 id="1-class-in-Kotlin"><a href="#1-class-in-Kotlin" class="headerlink" title="1. class in Kotlin"></a>1. <code>class</code> in Kotlin</h2><p>因<strong>大幅減少了創建 class 的程式碼</strong>，除了宣告 class 時省力外，還可用於 function 需 return 超過一個值時的場合，不必再像從前要先回傳 List 再解開。</p>
+<p>在下面的演講中，Kotlin Designer 親自說明 Kotlin 與傳統 Java 寫起來應注意的邏輯差異，值得多體會比較，之後打算特地寫一篇紀錄。</p>
+<p>ref: <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=6P20npkvcb8">How to Kotlin - from the Lead Kotlin Language Designer (Google I/O ‘18)</a></p>
+<h2 id="2-引入-library-遇到問題時的-sop"><a href="#2-引入-library-遇到問題時的-sop" class="headerlink" title="2. 引入 library 遇到問題時的 sop:"></a>2. 引入 library 遇到問題時的 sop:</h2><p>導入 material design 時研究了一下，針對未來不論版本更新或導入新的 library，都可參照以下方法：</p>
+<ol>
+<li>Go to Artifact Mappings and serach for desired library</li>
+<li>Go to AndroidX Releases page and check for the current version number</li>
+<li>Add the library in <em>build.gradoe[module.app]</em> and press <code>Sync Now</code></li>
+</ol>
+<p>ref: <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/53089633/how-to-add-cardview-in-layout-xml-in-androidx">android - How to add cardview in layout xml in AndroidX - Stack Overflow</a></p>
+<h2 id="3-drawable-resources的-ID"><a href="#3-drawable-resources的-ID" class="headerlink" title="3. drawable resources的 ID"></a>3. <em>drawable resources</em>的 ID</h2><p>若以 bitmap 方式引入圖片，放在 drawable folder 內的檔案會自動根據檔名生成對應的 property (e.g. R.drawable.bg)，即便看起來像 String 格式，但其實已被轉化為對應 ID 的 Int。</p>
+<p>除了目前用過的 Bitmap 之外，似乎還有各種資源的對應方式，遇到時可以看 doc 進一步了解。</p>
+<hr>
+<h1 id="產品思維部分"><a href="#產品思維部分" class="headerlink" title="產品思維部分"></a>產品思維部分</h1><p>有找到兩個平日可以吸收資訊的網站：</p>
+<ol>
+<li>人人都是產品經理（中國）</li>
+<li>3PM(台灣)</li>
+</ol>
+<p>專注技術面時，常會忘了要以需求為導向去做產品，因此透過別人有框架的分析，來完善自己看事物的能力。而如何有效地發現並進一步實現需求則有賴平時的體驗、分析、改良。至於該如何做到？以下整理自己整理的心得</p>
+<h2 id="1-專業分析所需的知識水準要到位"><a href="#1-專業分析所需的知識水準要到位" class="headerlink" title="1. 專業分析所需的知識水準要到位"></a>1. 專業分析所需的知識水準要到位</h2><p>過往像 Extra Credits 試著用娛樂資訊(infotainment)的方式去探討這類需求，但會遇到的最直接瓶頸就是脫離現實，即便是心理層面的探討也都屬於較主觀的觀察。因此包含心理學、統計學、業界的產品分析水準都要精進，才能用更嚴謹的語言去與別人交流產品現況</p>
+<h2 id="2-取得資料與分析資料，再講故事"><a href="#2-取得資料與分析資料，再講故事" class="headerlink" title="2. 取得資料與分析資料，再講故事"></a>2. 取得資料與分析資料，再講故事</h2><p>現實的資料最有說服力，如何透過分析資料讓迭代過程有意義，本身就是可以學習甚至研究的領域。對於資料操作（資料庫）、資料分析（深度學習）的技術面也不可放。</p>
+<p>而在那之上如何透過報告或其他機會與人交流，說故事的能力就很重要，因此先從難得的報告機會做起，在那之上看如何擴大影響力。</p>
+<h2 id="3-迭代的技術開發能力學習-避開雜訊"><a href="#3-迭代的技術開發能力學習-避開雜訊" class="headerlink" title="3. 迭代的技術開發能力學習 - 避開雜訊"></a>3. 迭代的技術開發能力學習 - 避開雜訊</h2><p>Android 是個變動很快的領域，如何更貼近上層開發者的討論框架是我現在的第一要務，避開中間過時或理解錯誤的觀點。</p>
+<p>Android 開發論壇應是很棒的材料來源，每天多學多看。而 Udemy 有其他框架思維類的課程，把握時間學習。</p>
+<hr>
+<h2 id="心得雜談"><a href="#心得雜談" class="headerlink" title="心得雜談"></a>心得雜談</h2><p>今日跟課程不太順利，老師在操作許多 function 時只草草帶過，對於其使用參數的意義沒多做解釋。在對整體架構不清楚的狀況下，看 doc 很辛苦。因此在最短的時間內修完這門課之餘，找時間看架構類的課程來補足觀念</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kotlin-%E7%94%A2%E5%93%81%E6%80%9D%E7%B6%AD/" rel="tag"># Kotlin, 產品思維</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/15/20200615%20%7C%20Flora%20Alarm%20Journey%20Day%203/" rel="prev" title="Day 3 | Flora Alarm Journey">
+      <i class="fa fa-chevron-left"></i> Day 3 | Flora Alarm Journey
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/18/20200618%20%7C%20Flora%20Alarm%20Journey%20Day%206/" rel="next" title="Day 6 | Flora Alarm Journey">
+      Day 6 | Flora Alarm Journey <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kotlin-%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">Kotlin 部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-class-in-Kotlin"><span class="nav-number">1.1.</span> <span class="nav-text">1. class in Kotlin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%BC%95%E5%85%A5-library-%E9%81%87%E5%88%B0%E5%95%8F%E9%A1%8C%E6%99%82%E7%9A%84-sop"><span class="nav-number">1.2.</span> <span class="nav-text">2. 引入 library 遇到問題時的 sop:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-drawable-resources%E7%9A%84-ID"><span class="nav-number">1.3.</span> <span class="nav-text">3. drawable resources的 ID</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A2%E5%93%81%E6%80%9D%E7%B6%AD%E9%83%A8%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">產品思維部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%B0%88%E6%A5%AD%E5%88%86%E6%9E%90%E6%89%80%E9%9C%80%E7%9A%84%E7%9F%A5%E8%AD%98%E6%B0%B4%E6%BA%96%E8%A6%81%E5%88%B0%E4%BD%8D"><span class="nav-number">2.1.</span> <span class="nav-text">1. 專業分析所需的知識水準要到位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%8F%96%E5%BE%97%E8%B3%87%E6%96%99%E8%88%87%E5%88%86%E6%9E%90%E8%B3%87%E6%96%99%EF%BC%8C%E5%86%8D%E8%AC%9B%E6%95%85%E4%BA%8B"><span class="nav-number">2.2.</span> <span class="nav-text">2. 取得資料與分析資料，再講故事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%BF%AD%E4%BB%A3%E7%9A%84%E6%8A%80%E8%A1%93%E9%96%8B%E7%99%BC%E8%83%BD%E5%8A%9B%E5%AD%B8%E7%BF%92-%E9%81%BF%E9%96%8B%E9%9B%9C%E8%A8%8A"><span class="nav-number">2.3.</span> <span class="nav-text">3. 迭代的技術開發能力學習 - 避開雜訊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%83%E5%BE%97%E9%9B%9C%E8%AB%87"><span class="nav-number">2.4.</span> <span class="nav-text">心得雜談</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Joe Luo</p>
+  <div class="site-description" itemprop="description">外語工程師的成長路途</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Joe Luo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">15k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14 mins.</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
